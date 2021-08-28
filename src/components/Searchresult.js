@@ -7,7 +7,7 @@ import SearchItem from './SearchItem';
 //   return <div></div>;
 // };
 
-const Searchresult = ({ getData, results }) => {
+const Searchresult = ({ getData, search: { results, loading } }) => {
   useEffect(() => {
     getData();
   }, [getData]);
@@ -15,27 +15,30 @@ const Searchresult = ({ getData, results }) => {
   return (
   
     <Fragment>
-      <h1 className='large text-primary'>Search results</h1>
-      <p className='lead'>
-        <i className='fas fa-user' /> HN API results
-      </p>
+      {loading ? (
+        <p>Yet to search</p>
+      ) : (
+        <Fragment>
+          <p className='large text-primary'>Search results</p>
 
-      <div className='posts'>
-        {results.map(result => (
-          <SearchItem key={result._id} result={result} />
-        ))}
-      </div>
+          <div className='posts'>
+            {results.hits.map(result => (
+              <SearchItem key={result.hits} result={result} />
+            ))}
+          </div>
+        </Fragment>
+      )}
     </Fragment>
   );
 };
 
 Searchresult.propTypes = {
   getData: PropTypes.func.isRequired,
-  results: PropTypes.object.isRequired
+  search: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
-  result: state.results
+  search: state.search
 });
 
 export default connect(mapStateToProps, { getData })(Searchresult);
